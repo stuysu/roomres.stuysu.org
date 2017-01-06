@@ -1,0 +1,31 @@
+{% extends "index3.html" %}
+
+{% block content %}
+
+
+<center>
+
+<table>
+<tr> <td> Date of Booking </td> <td> Club </td> <td> Club Email </td>  <td> Room</td> </tr>
+{% for item in L %}
+<tr>
+  <td>
+    {{item['day'][5:]}} </td>
+
+  <td>
+    {{item['name']}}
+    </td>
+<td>
+{{item['club']}}
+</td>
+
+<td>
+{{item['room']}}
+</td>
+
+</tr>
+
+{% endfor %}
+</table>
+</center>
+{% endblock %}
