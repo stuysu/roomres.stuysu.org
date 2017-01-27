@@ -59,7 +59,7 @@ def regMain(club, osis, email, password):#register helper
     if reg == "": #if error message is blank then theres no problem, update database
         salt = urandom(10).encode('hex')
         #print salt
-        query = ("INSERT INTO users VALUES (?, ?, ?, ?, ?)")
+        query = ("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)")
         password = sha1(password + salt).hexdigest()
         userID = getSize()+1
         c.execute(query, (userID, email, int(osis), salt, password, club))
@@ -92,3 +92,12 @@ def duplicate(email):#checks if username already exists
     db.commit()
     db.close()
     return value
+
+
+
+
+#--------------------------------------
+# admin stuff
+#--------------------------------------
+
+

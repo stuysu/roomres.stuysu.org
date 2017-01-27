@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from utils import auth, calendars
+from utils import utils, database
 import json
 import calendar
 import datetime
@@ -13,25 +13,14 @@ def root():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    print ("hello")
     if request.method == "POST":
-        name = request.form['name']  #club name
+        name = request.form['name']
         email = request.form["email"]
-        pwd1 = request.form["pwd"]
-        pwd2 = request.form["pwd2"]
-        osis = request.form["osis"]
-        msg = auth.register(name,osis,email,pwd1,pwd2)
-        try:
-            osis = int(osis)
-        except:
-            osis = None
-        if msg == "Account created!":
-            return redirect(url_for("login"))
-        else:
-            print "Message: " + msg
-            return render_template("signup.html",message=msg)
+        pwd = request.form["pwd"]
+        utils.register_user(name, email, pwd)
+        return redirect(url_for("login"))
     else:
-        return render_template("signup.html",message="")
+        return render_template("signup.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -42,16 +31,14 @@ def login():
     else:
         email = request.form['email']
         pwd = request.form['pwd']
-        msg = auth.login(email,pwd)
-        if len(msg) == 0:
+
+        if utils.confirm_user(email, pwd):
             session['logged_in'] = True
             session['email'] = email
             session['pwd'] = pwd
-            print("logged in")
             return redirect(url_for("dashboard"))
         else:
             return render_template("login.html")
-
 
 @app.route("/changepwd", methods=["GET", "POST"])
 @app.route("/changepwd/", methods=["GET", "POST"])
@@ -91,7 +78,7 @@ def adlogin():
 def dashboard():
     if 'logged_in' not in session:
         return redirect(url_for("root"))
-    cal = calendars.calendardict(0)
+    cal = utils.calendardict(0)
     if request.method=="GET":
         return render_template("dashboard.html", L = cal, message=0)
     else:

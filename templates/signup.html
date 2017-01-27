@@ -3,8 +3,14 @@
 {% block content %}
 
 <center>
+
+  {% if not message == "" %}
+  <div class="alert alert-danger" role="alert">{{ message }}</div>
+  {% endif %}
+  
   <br>
   <br>
+  
 <p  style="font-size:27px">
           <b>  Sign Up </b>
   </p>
@@ -20,8 +26,16 @@
  <input type="text" name="email" id="email"/>
  <br>
  <br>
+ Osis
+ <input type="number" name="osis" id="osis"/>
+ <br>
+ <br>
   Password
  <input type="password" name="pwd" id="pwd"/>
+ <br>
+ <br>
+ Confirm Password
+ <input type="password" name="pwd2" id="pwd2"/>
  <br>
  <br>
 
