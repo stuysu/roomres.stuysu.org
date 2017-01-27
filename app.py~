@@ -218,7 +218,7 @@ def administrationview():
     check = list(utils.db.rooms.find())
     newcheck = []
     for item in check:
-        if item['club'] != '':
+        if 'club' in item and item['club'] != '':
             name=utils.find_club(item['club'])
             item['name'] = name
             newcheck.append(item)
