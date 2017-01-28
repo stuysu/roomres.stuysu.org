@@ -92,12 +92,3 @@ def duplicate(email):#checks if username already exists
     db.commit()
     db.close()
     return value
-
-
-
-
-#--------------------------------------
-# admin stuff
-#--------------------------------------
-
-

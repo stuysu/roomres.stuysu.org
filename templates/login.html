@@ -1,7 +1,13 @@
-{% extends "indexa.html" %}
+{% extends "index.html" %}
 
 {% block content %}
 <center>
+
+
+  {% if not message == "" %}
+  <div class="alert alert-danger" role="alert">{{ message }}</div>
+  {% endif %}
+  
   <br>
   <br>
 <p  style="font-size:27px">

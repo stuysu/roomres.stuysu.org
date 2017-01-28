@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,114 +16,114 @@
     <!-- Custom CSS -->
     <link href="/static/css/heroic-features.css" rel="stylesheet">
 
-<style>
-table, td, th{
-  border: 1px solid#ddd;
-  text-align: left;
-}
-table {
-  border-collapse: collapse;
-  width: 6%;
+    <style>
+      table, td, th{
+      border: 1px solid#ddd;
+      text-align: left;
+      }
+      table {
+      border-collapse: collapse;
+      width: 6%;
 
-}
-th, td {
-  padding:2px;
-}
+      }
+      th, td {
+      padding:2px;
+      }
 
-</style>
+    </style>
 
-</head>
-<script type="text/javascript">
-<!--
-    function toggle_visibility(id) {
-       var e = document.getElementById(id);
-       if(e.style.display == 'block')
-          e.style.display = 'none';
-       else
-          e.style.display = 'block';
-    }
-//-->
-</script>
-<body>
+  </head>
+  <script type="text/javascript">
+    <!--
+	function toggle_visibility(id) {
+	var e = document.getElementById(id);
+	if(e.style.display == 'block')
+        e.style.display = 'none';
+	else
+        e.style.display = 'block';
+	}
+	//-->
+  </script>
+  <body>
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">RoomPro</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="/view">Bookings</a>
-                    </li>
-                    <li>
-                        <a href="/dashboard">Calendar</a>
-                    </li>
-
-                    <li>
-                        <a href="http://stuysu.org/su-contact.html">Contact</a>
-                    </li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-
-                    <li>
-                        <a href="/signup">Create Account</a>
-                    </li>
-
-                    <li>
-                        <a href="/login">Login</a>
-                    </li>
-
-                    <li>
-                        <a href="/adlogin">Admin Login</a>
-                    </li>
-{% if not out %}
-		    <li>
-		      <a href-"/logout"> Sign Out </a>
-		      </li>
-                 {% endif %}                
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">RoomPro</a>
         </div>
-        <!-- /.container -->
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="/view">Bookings</a>
+            </li>
+            <li>
+              <a href="/dashboard">Calendar</a>
+            </li>
+            <li>
+              <a href="http://stuysu.org/su-contact.html">Contact</a>
+            </li>
+	  </ul>
+	  <ul class="nav navbar-nav navbar-right">
+
+	    {% if out %}
+            <li>
+              <a href="/signup">Create Account</a>
+            </li>
+            <li>
+              <a href="/login">Login</a>
+            </li>
+            <li>
+              <a href="/adlogin">Admin Login</a>
+            </li>
+	    {% endif %}
+	    
+	    {% if not out %}
+	    <li>
+	      <a href="/logout"> Sign Out </a>
+	    </li>
+            {% endif %}                
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container -->
     </nav>
 
     <!-- Page Content -->
     <div class="container">
 
-{% block content %}
+      {% block content %}
       <br><br>
-        <!-- Jumbotron Header -->
-          <center>
-            <img src="/static/logo.png"><br>
-            <h3><strong>Room Reservation</strong> by <a href="www.stuysu.org">Stuyvesant Student Union</a></h3>
-          </center>
+      <!-- Jumbotron Header -->
+      <center>
+        <img src="/static/logo.png"><br>
+        <h3><strong>Room Reservation</strong> by <a href="www.stuysu.org">Stuyvesant Student Union</a></h3>
+      </center>
 
-        <hr>
+      <hr>
 
-       
-        <!-- /.row -->
+      
+      <!-- /.row -->
 
-        <hr>
+      <hr>
 
-        <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Kathy Lau 2016</p>
-                </div>
-            </div>
-        </footer>
+      <!-- Footer -->
+      <footer>
+        <div class="row">
+          <div class="col-lg-12">
+            <p>Copyright &copy; Kathy Lau 2016</p>
+          </div>
+        </div>
+      </footer>
 
     </div>
     <!-- /.container -->
@@ -133,7 +133,7 @@ th, td {
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/js/bootstrap.min.js"></script>
-{% endblock %}
-</body>
+    {% endblock %}
+  </body>
 
 </html>
