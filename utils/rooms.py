@@ -38,48 +38,60 @@ UPDATE DB FUNCTIONS
 
 #queries is a dictionary or list?
 
-def updateDB(queries,parameter,newEntry):
-    return None
-
 def checkCreateTable():
-     db = connect(f)
-     c = db.cursor()
-     try:
-          c.execute("SELECT * FROM rooms")
-     except:
-          c.execute("CREATE TABLE rooms (club TEXT, email TEXT, room INT, data TEXT, time TEXT)");
-     db.commit()
-     db.close()
+    db = connect(f)
+    c = db.cursor()
+    try:
+        c.execute("SELECT * FROM rooms")
+    except:
+        c.execute("CREATE TABLE rooms (club TEXT, email TEXT, room INT, date TEXT, weekday TEXT, time TEXT)");
+    db.commit()
+    db.close()
+    
 
-def booked(email, room):
-     db = connect(f)
-     c = db.cursor()
-     query = "SELECT email, room FROM rooms WHERE email=? and room=?"
-     info = c.execute(query, (email, room))
-     value = False
-     for record in info:
-          value = True
-     db.commit()
-     db.close()
-     return value
+def booked(date, room):
+    db = connect(f)
+    c = db.cursor()
+    query = "SELECT date, room FROM rooms WHERE date=? AND room=?"
+    info = c.execute(query, (date, room))
+    value = False
+    for record in info:
+         value = True
+    db.commit()
+    db.close()
+    return value
 
-def bookRoom(club, email, room):
-     db = connect(f)
-     c = db.cursor()
-     checkCreateTable()
-     if not booked(email, room):
+def addBook(club, email, room, date):
+    db = connect(f)
+    c = db.cursor()
+    checkCreateTable()
+    if not booked(date, room):
          now = datetime.datetime.now()
-         date = now.strftime("%Y-%m-%d")
          time = now.strftime("%H:%M")
+         weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')
          #print date
          #print time
-         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?)")
-         c.execute(query, (club, email, room, date, time))
-     db.commit()
-     db.close()
+         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
+         c.execute(query, (club, email, room, date, weekday, time))
+         return club + " has now booked " + str(room) + " on " + date
+    else:
+        return "Sorry, " + str(room) + "  is booked on " + date
+    db.commit()
+    db.close()
 
-
-
+def removeBook(room, date):
+    db = connect(f)
+    c = db.cursor()
+    checkCreateTable()
+    if booked(date, room):
+        query = "DELETE FROM rooms WHERE date=? and room=?"
+        c.execute(query, (date, room))
+        return str(room) + " is now available on " + date
+    else:
+        return str(room) + " is actually now booked on " + date
+    db.commit()
+    db.close()
+    
 """
 Adds rooms to room list 5 at a time
 Args:
@@ -225,4 +237,4 @@ db.commit()
 db.close()
 
 if __name__=="__main__":
-    bookRoom("RoadRunners", "test@example.com", 235)
+    updateDB("RoadRunners", "test@example.com", 235, "2016-01-29")
