@@ -6,7 +6,7 @@ import datetime
 from calendar import monthrange
 
 
-f = "data/roomres.db"
+f = "../data/roomres.db"
 db = connect(f)
 c = db.cursor()
 
@@ -17,7 +17,7 @@ Find list of values functions
 '''
 
 def find():
-    c.execute("SELECT * from rooms")
+    checkCreateTable()
     return c.fetchall()
 
 def findP(field,value):
@@ -41,6 +41,42 @@ UPDATE DB FUNCTIONS
 def updateDB(queries,parameter,newEntry):
     return None
 
+def checkCreateTable():
+     db = connect(f)
+     c = db.cursor()
+     try:
+          c.execute("SELECT * FROM rooms")
+     except:
+          c.execute("CREATE TABLE rooms (club TEXT, email TEXT, room INT, data TEXT, time TEXT)");
+     db.commit()
+     db.close()
+
+def booked(email, room):
+     db = connect(f)
+     c = db.cursor()
+     query = "SELECT email, room FROM rooms WHERE email=? and room=?"
+     info = c.execute(query, (email, room))
+     value = False
+     for record in info:
+          value = True
+     db.commit()
+     db.close()
+     return value
+
+def bookRoom(club, email, room):
+     db = connect(f)
+     c = db.cursor()
+     checkCreateTable()
+     if not booked(email, room):
+         now = datetime.datetime.now()
+         date = now.strftime("%Y-%m-%d")
+         time = now.strftime("%H:%M")
+         #print date
+         #print time
+         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?)")
+         c.execute(query, (club, email, room, date, time))
+     db.commit()
+     db.close()
 
 
 
@@ -184,3 +220,9 @@ def find_club(email):
     if name != []:
         return name[0]['name']
     return False
+
+db.commit()
+db.close()
+
+if __name__=="__main__":
+    bookRoom("RoadRunners", "test@example.com", 235)
