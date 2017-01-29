@@ -145,8 +145,8 @@ def dashnext():
                 month = month[1]
             date =  year+"-" +month+'-'+d
             session['day'] = date
-            check =list(utils.db.rooms.find({'day':date}))
-            return render_template("dashboard.html", L = cal, G = check, message=1,out=userOut())
+            #check =list(utils.db.rooms.find({'day':date}))
+            return render_template("dashboard.html", L = cal, message=1,out=userOut()) #G = check
         else:
             session['room'] = d
             rooms.book_room(session['day'], session['room'], session['email'])
@@ -168,7 +168,7 @@ def view():
         day = info.split(',')[0]
         room = info.split(',')[1]
         club = info.split(',')[2]
-        utils.del_room(day, room, club)
+        rooms.del_room(day, room, club)
         return redirect(url_for("view"))
 
 
@@ -232,7 +232,7 @@ def administrationview():
     newcheck = []
     for item in check:
         if 'club' in item and item['club'] != '':
-            name=utils.find_club(item['club'])
+            name=rooms.find_club(item['club'])
             item['name'] = name
             newcheck.append(item)
     return render_template("damesek.html", L=sorted(newcheck, key=lambda k: k['day']))
@@ -250,7 +250,7 @@ def add():
         r4 = request.form["room4"]
         r5 = request.form["room5"]
         L = [r1,r2,r3,r4,r5]
-        utils.add_room(L)
+        rooms.add_room(L)
         return redirect(url_for("add"))
 
 
@@ -267,7 +267,7 @@ def dele():
         L = [r1,r2,r3,r4,r5]
         for r in L:
             if len(r) > 2:
-                utils.takeoff_room(r)
+                rooms.takeoff_room(r)
         return redirect(url_for("add"))
 
 
