@@ -324,7 +324,7 @@ def dele():
 
         #how do we handle multiple messages here?
         
-        return redirect(url_for("del"))
+        return redirect(url_for("dele"))
 
 
 

@@ -232,7 +232,7 @@ def changeBook(date,room,newr,club):
     return "change success"
     
 #change date to day and month
-def adminDeleteRoom(room, month, day):
+def adminRemoveRoom(room, month, day):
     
     if room == None or room == "":
         return "One or more fields was not filled"
