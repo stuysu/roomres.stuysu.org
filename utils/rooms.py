@@ -64,7 +64,7 @@ def checkCreateTable():
     except:
         c.execute("CREATE TABLE rooms (club TEXT, email TEXT, room INT, date TEXT, weekday TEXT, time TEXT)");
     db.commit()
-    #db.close()
+    db.close()
 
     
 def booked(date, room):
