@@ -245,7 +245,7 @@ def adview():
 def administrationview():
     if 'logged_in' not in session:
         return redirect("/")
-    check = rooms.find()
+    check = rooms.findBooked()
     return render_template("damesek.html", L=sorted(check, key=lambda k: k[4]),out=userOut()) #k[4] is day
 
 
