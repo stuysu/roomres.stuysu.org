@@ -28,8 +28,8 @@
     <td>
       {% if i != 0 %}
       <a href="#">
-
-          <INPUT TYPE="submit" name="day" VALUE="{{i}}">
+	<input type="hidden" id="option_show" name="option" value="show">
+	<INPUT TYPE="submit" name="day" VALUE="{{i}}">
             {% endif %}
     </a>
     </td>
@@ -38,7 +38,31 @@
   {% endfor %}
 </table>
 <br>
-  <br>
+<br>
+
+
+{% if not G == "" %}
+
+<h2><span>Available Rooms</span></h2>
+
+{% for room in G %}
+
+<form>
+
+  Room: {{room[2]}}
+
+  Date: {{room[3]}}
+
+  <input type="hidden" name="room" value="{{room[2]}}">
+  <input type="hidden" name="day" value="{{room[3]}}">
+  <input class="btn btn-primary" id="option_book" name="option" type="submit" value="Book Room" value_="Book Room">
+
+</form>
+
+{% endfor %}
+
+
+{% endif %}
 
 <style>
 input[type=text] {

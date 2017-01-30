@@ -38,7 +38,7 @@ def calendardict(i):
                 tempL += [0]
             else:
                 if date < 10:
-                    dat = " " + str(date)
+                    dat = "0" + str(date)
                     tempL += [dat]
                 else:
                     tempL += [date]  
@@ -52,9 +52,8 @@ def calendardict(i):
             L += [tempL]
             tempL = []
         else:
-            print "date: "
             if date < 10:
-                dat = " " + str(date)
+                dat = "0" + str(date)
                 tempL += [dat]
             else:
                 tempL += [date]

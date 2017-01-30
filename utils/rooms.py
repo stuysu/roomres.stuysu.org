@@ -3,6 +3,7 @@ from hashlib import sha1
 from os import urandom
 from random import randrange
 import datetime
+import calendar
 from calendar import monthrange
 
 
@@ -50,6 +51,25 @@ def findP(field,value):
     return l
 
 
+
+def findUnbooked(field,value):
+    print "check"
+    print value
+    db = connect(f)
+    c = db.cursor()
+    if type(value) is int:
+        c.execute("SELECT * from rooms WHERE %s = %d AND club=\"\"" % (field,value))
+    elif type(value) is str or type(value) is unicode:
+        c.execute("SELECT * from rooms WHERE %s = \"%s\" AND club=\"\"" % (field,value))
+    else:
+        print "error: "
+        print type(value)
+        c.execute("SELECT * from rooms")
+    l =  cursorToList(c)
+    db.close()
+    return l
+
+
 '''
 ------------------------------
 UPDATE DB FUNCTIONS
@@ -70,7 +90,7 @@ def checkCreateTable():
 def booked(date, room):
     db = connect(f)
     c = db.cursor()
-    query = "SELECT date, room FROM rooms WHERE date=? AND room=?"
+    query = "SELECT date, room FROM rooms WHERE date=? AND room=? AND club!=\"\""
     info = c.execute(query, (date, room))
     value = False
     for record in info:
@@ -85,8 +105,10 @@ def addBook(email, date, room):
     checkCreateTable()
     msg = "Sorry, " + str(room) + "  is booked on " + date
     if not booked(date, room):
-         query = ("SELECT from users WHERE email=?")
-         c.execute(query,(email))
+         query = ("SELECT * from users WHERE email=?")
+         print email
+         print(query,(email))
+         c.execute(query,(email,))
          club = c.fetchall()[0][5]
          
          now = datetime.datetime.now()
@@ -94,40 +116,78 @@ def addBook(email, date, room):
          weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')
          #print date
          #print time
-         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
-         c.execute(query, (club, email, room, date, weekday, time))
+
+         print "club:"
+         print club
+         print "email:"
+         print email
+
+         query = ("UPDATE rooms SET club=? , email=?, time=? WHERE room=? and date=?")
+         c.execute(query, (club, email, time,room,date))
+         
          msg =  (club + " has now booked " + str(room) + " on " + date)
     db.commit()
     db.close()
     return msg
 
 
-def adminAddBook(room, club, date):
+
+def getFirstWeekdayDate(month, weekday):
+    dayDict = {}
+    dayDict["Monday"] = 0
+    dayDict["Tuesday"] = 1
+    dayDict["Wednesday"] = 2
+    dayDict["Thursday"] = 3
+    dayDict["Friday"] = 4
+    dayDict["Saturday"] = 5
+    dayDict["Sunday"] = 6
+
+    cal = calendar.Calendar(0)
+    mon = cal.monthdatescalendar(datetime.datetime.now().year,int(month))
+    firstweek = mon[0]
+    day = firstweek[dayDict[weekday]]
+
+    return day.day
 
 
-    if room == None or room == "" or club == None or club == "":
+def adminAddRooms(room, month, day):
+    
+    if room == None or room == "":
         return "One or more fields was not filled"
     
     if int(room) < 101 or int(room) > 1030:
         return "Room does not exist!!!"
 
+    month = int(month)
     
     db = connect(f)
     c = db.cursor()
     checkCreateTable()
-    
-    msg = "Sorry, " + str(room) + "  is booked on " + str(date)
-    
-    if not booked(date, room):        
-         now = datetime.datetime.now()
-         time = now.strftime("%H:%M")
-         weekday = datetime.datetime.strptime(date, "%Y-%m-%d").strftime('%A')
-         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
-         c.execute(query, (club, "admin", room, date, weekday, time))
-         msg =  (club + " has now booked " + str(room) + " on " + date)
+           
+    now = datetime.datetime.now()
+    time = now.strftime("%H:%M")
+
+    club = ""
+    mDays = calendar.monthrange(2017,int(month))[1]
+    fDay = getFirstWeekdayDate(month, day)
+
+    monthStr = str(month)
+    if month < 10:
+        monthStr = "0" + monthStr
+             
+    while fDay <= mDays:
+        fDayStr = str(fDay)
+        if (fDay < 10):
+            fDayStr = "0" + fDayStr
+            
+        date = str(now.year) + "-" + str(monthStr) + "-" + str(fDayStr)
+        query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
+        c.execute(query, (club, "admin", room, date, day, time))                
+        fDay+=7
+         
     db.commit()
     db.close()
-    return msg
+    return "Put room for booking up"
 
 
 def removeBook(room, date):
@@ -306,5 +366,5 @@ db.close()
 
 
 if __name__=="__main__":
-    addBook("RoadRunners", "test@example.com", 235, "2016-01-29")
+    addBook("test@example.com",  "2016-01-29", 235)
 

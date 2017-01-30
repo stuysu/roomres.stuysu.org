@@ -113,19 +113,24 @@ def dashboard():
     
     cal = calendars.calendardict(0)
     if request.method=="GET":
-        return render_template("dashboard.html", L = cal, message=0,out=userOut())
+        return render_template("dashboard.html", L = cal, message=0,out=userOut(), G="")
     else:
         d = request.form["day"]
         if len(d)< 3:
             session['day'] = d
-            today = str(datetime.date.today())
-            month = str(today.split('-')[1])
-            year = str(today.split('-')[0])
+            today = datetime.date.today()
+            month = today.month
+            if month < 10:
+                month = "0" + str(month)
+            else:
+                month = str(month)
+            year = str(today.year)
+            
             if month[0] == '0':
                 month = month[1]
             date =  year+"-" +month+'-'+d
             session['day'] = date
-            check = rooms.findP("date",date)            
+            check = rooms.findUnbooked("date",date)            
             return render_template("dashboard.html", L = cal, G = check, message=0,out=userOut())
         else:
             r = request.form['room']
@@ -139,24 +144,22 @@ def dashnext():
         return redirect(url_for("root"))
     cal = calendars.calendardict(1)
     if request.method=="GET":
-        return render_template("dashboard.html", L = cal, message=1,out=userOut())
+        return render_template("dashboard.html", L = cal, message=1,out=userOut(), G="")
     else:
         d = request.form["day"]
         if len(d)< 3:
-            session['day'] = d
-            today = str(datetime.date.today())
-            month = str(today.split('-')[1])
-            year = str(today.split('-')[0])
-            if month == "12":
-                month = "1"
-                year = str((int(year) + 1))
+            today = datetime.date.today()
+            month = today.month+1
+            if month < 10:
+                month = "0" + str(month)
             else:
-                month = str((int(month) + 1))
-            if month[0] == "0":
-                month = month[1]
-            date =  year+"-" +month+'-'+d
+                month = str(month)
+            year = str(today.year)
+                
+            date =  year+"-" +month+'-'+d                   
             session['day'] = date
-            return render_template("dashboard.html", L = cal, message=1,out=userOut()) #G = check
+            check = rooms.findUnbooked("date",date)
+            return render_template("dashboard.html", L = cal, message=1,out=userOut(),G=check)
         else:
             r = request.form['room']
             msg = rooms.addBook(session['email'],d,r)
@@ -253,23 +256,23 @@ def add():
         return render_template("add.html",out=userOut()) 
     else:
         choices = {}
-        choices[request.form["room1"]] = request.form["club1"]
-        choices[request.form["room2"]] = request.form["club2"]
-        choices[request.form["room3"]] = request.form["club3"]
-        choices[request.form["room4"]] = request.form["club4"]
-        choices[request.form["room5"]] = request.form["club5"]
+        choices[request.form["room1"]] = request.form["month1"]
+        choices[request.form["room2"]] = request.form["month2"]
+        choices[request.form["room3"]] = request.form["month3"]
+        choices[request.form["room4"]] = request.form["month4"]
+        choices[request.form["room5"]] = request.form["month5"]
 
-        dates = []
-        dates.append(str(request.form["date1"]))
-        dates.append(str(request.form["date2"]))
-        dates.append(str(request.form["date3"]))
-        dates.append(str(request.form["date4"]))
-        dates.append(str(request.form["date5"]))
+        days = []
+        days.append(str(request.form["day1"]))
+        days.append(str(request.form["day2"]))
+        days.append(str(request.form["day3"]))
+        days.append(str(request.form["day4"]))
+        days.append(str(request.form["day5"]))
 
         
         i = -1
         for key,val in choices.iteritems():
-            rooms.adminAddBook(key,val,dates[i])
+            rooms.adminAddRooms(key,val,days[i])
             i+=1
 
         #how do we handle multiple messages here?
