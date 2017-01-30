@@ -10,19 +10,19 @@
 
 <tr>
   <td>
-{{item['day']}} </td>
+{{item[3]}} </td>
 <td>
-{{item['club']}}
+{{item[0]}}
 </td>
 <td>
-{{item['room']}}
+{{item[2]}}
 </td>
 
 
 <td>
 <FORM method = "POST">
 
-  <button TYPE="submit" name="del" id="style" VALUE="{{item['day'] + ',' + item['room'] + ',' + item['club']}}">Delete </button>
+  <button TYPE="submit" name="del" id="style" VALUE="{{item[3] + ',' + item[2] + ',' + item[0]}}">Delete </button>
 </FORM>
 </td>
 </tr>

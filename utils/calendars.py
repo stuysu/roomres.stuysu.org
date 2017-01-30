@@ -35,7 +35,11 @@ def calendardict(i):
             if date < 2 and now[0] != currPos:
                 tempL += [0]
             else:
-                tempL += [date]
+                if date < 10:
+                    dat = " " + str(date)
+                    tempL += [dat]
+                else:
+                    tempL += [date]  
                 date += 1
             currPos += 1
         L += [tempL]
@@ -46,7 +50,12 @@ def calendardict(i):
             L += [tempL]
             tempL = []
         else:
-            tempL += [date]
+            print "date: "
+            if date < 10:
+                dat = " " + str(date)
+                tempL += [dat]
+            else:
+                tempL += [date]
             date +=1
     L += [tempL]
     print L

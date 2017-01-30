@@ -30,16 +30,24 @@ def find():
     db = connect(f)
     c = db.cursor()
     c.execute("SELECT * from rooms")
-    return cursorToList(c)
+    l = cursorToList(c)
+    db.close()
+    return l
 
 def findP(field,value):
+    db = connect(f)
+    c = db.cursor()
     if type(value) is int:
         c.execute("SELECT * from rooms WHERE %s = %d" % (field,value))
-    elif type(value) is str:
+    elif type(value) is str or type(value) is unicode:
         c.execute("SELECT * from rooms WHERE %s = \"%s\"" % (field,value))
     else:
+        print "error: "
+        print type(value)
         c.execute("SELECT * from rooms")
-    return cursorToList(c)
+    l =  cursorToList(c)
+    db.close()
+    return l
 
 
 '''
@@ -71,13 +79,16 @@ def booked(date, room):
     db.close()
     return value
 
-def addBook(club, email, room, date):
+def addBook(email, date, room):
     db = connect(f)
     c = db.cursor()
     checkCreateTable()
     msg = "Sorry, " + str(room) + "  is booked on " + date
     if not booked(date, room):
-         print "adding"
+         query = ("SELECT from users WHERE email=?")
+         c.execute(query,(email))
+         club = c.fetchall()[0][5]
+         
          now = datetime.datetime.now()
          time = now.strftime("%H:%M")
          weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')

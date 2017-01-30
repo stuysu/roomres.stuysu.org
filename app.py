@@ -24,14 +24,14 @@ NOT LOGGED IN
 @app.route('/')
 def root():
     if 'logged_in' in session:
-        if session['type'] == 'user':
-            return redirect(url_for("/dashboard"))
+        if session['type'] == 'club':
+            return redirect(url_for("dashboard"))
         elif session['type'] == 'admin':
-            print "ad view"
             return redirect(url_for("adview"))
         elif session['type'] == 'administrator':
-            return redirect(url_for("/administrationview"))
+            return redirect(url_for("administrationview"))
         else:
+            print session['type']
             return "You broke the page!"
     return render_template("index.html",out=userOut())
 
@@ -110,6 +110,7 @@ USER LOGGED IN
 def dashboard():
     if 'logged_in' not in session:
         return redirect(url_for("root"))
+    
     cal = calendars.calendardict(0)
     if request.method=="GET":
         return render_template("dashboard.html", L = cal, message=0,out=userOut())
@@ -125,12 +126,13 @@ def dashboard():
             date =  year+"-" +month+'-'+d
             #print date
             session['day'] = date
-            check =list(utils.db.rooms.find({'day':date}))
+            #check =list(utils.db.rooms.find({'day':date}))
+            check = rooms.findP("date",date)
+            
             return render_template("dashboard.html", L = cal, G = check, message=0,out=userOut())
         else:
-            session['room'] = d
-            print session['room']
-            utils.book_room(session['day'], session['room'], session['email'])
+            r = request.form['room']
+            rooms.addBook(session['email'],d,r)
             return redirect(url_for("view"))
 
 
@@ -160,8 +162,8 @@ def dashnext():
             #check =list(utils.db.rooms.find({'day':date}))
             return render_template("dashboard.html", L = cal, message=1,out=userOut()) #G = check
         else:
-            session['room'] = d
-            rooms.book_room(session['day'], session['room'], session['email'])
+            r = request.form['room']
+            rooms.addBook(session['email'],d,r)
             return redirect(url_for("view"))
             #return "You've booked " + session['room'] + " for " + session['day'] + "!"
 
@@ -171,7 +173,7 @@ def view():
     if 'logged_in' not in session:
         return redirect(url_for("root"))
     if request.method=="GET":
-        check = list(utils.db.rooms.find({'club': session['email']}))
+        check = rooms.findP("email",session["email"])
         today = str(datetime.date.today())
         month = str(today.split('-')[1])
         return render_template("view.html", L = check,out=userOut())
@@ -180,7 +182,7 @@ def view():
         day = info.split(',')[0]
         room = info.split(',')[1]
         club = info.split(',')[2]
-        rooms.del_room(day, room, club)
+        rooms.removeBook(room,day)
         return redirect(url_for("view"))
 
 
@@ -215,6 +217,8 @@ def adlogin():
 
 @app.route("/adview", methods=["GET", "POST"])
 def adview():
+    if 'logged_in' not in session:
+        return redirect("/")
     if request.method=="POST":
         if "del" in request.form:
             info = request.form['del']
@@ -234,13 +238,15 @@ def adview():
         return redirect(url_for("adview"))
     if request.method == "GET":
         check = rooms.find()
-        return render_template("adview.html", L = sorted(check, key=lambda k: k[4]))
+        return render_template("adview.html", L = sorted(check, key=lambda k: k[4]),out=userOut())
     
 
 @app.route("/administrationview", methods=["GET"])
 def administrationview():
+    if 'logged_in' not in session:
+        return redirect("/")
     check = rooms.find()
-    return render_template("damesek.html", L=sorted(check, key=lambda k: k[4])) #k[4] is day
+    return render_template("damesek.html", L=sorted(check, key=lambda k: k[4]),out=userOut()) #k[4] is day
 
 
 #INCOMPLETE
