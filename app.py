@@ -259,13 +259,26 @@ def add():
         #check =list(utils.db.rooms.find({'day': '2016-10-4'}))
         return render_template("add.html",out=userOut()) #, L =check)
     else:
-        r1 = request.form["room1"]
-        r2 = request.form["room2"]
-        r3 = request.form["room3"]
-        r4 = request.form["room4"]
-        r5 = request.form["room5"]
-        L = [r1,r2,r3,r4,r5]
-        rooms.addBook(L)
+        choices = {}
+        choices[request.form["room1"]] = request.form["club1"]
+        choices[request.form["room2"]] = request.form["club2"]
+        choices[request.form["room3"]] = request.form["club3"]
+        choices[request.form["room4"]] = request.form["club4"]
+        choices[request.form["room5"]] = request.form["club5"]
+
+        dates = []
+        dates.append(str(request.form["date1"]))
+        dates.append(str(request.form["date2"]))
+        dates.append(str(request.form["date3"]))
+        dates.append(str(request.form["date4"]))
+        dates.append(str(request.form["date5"]))
+
+        
+        i = -1
+        for key,val in choices.iteritems():
+            rooms.adminAddBook(key,val,dates[i])
+            i+=1
+        
         return redirect(url_for("add"))
 
 

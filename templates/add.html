@@ -1,32 +1,57 @@
 {% extends "index2.html" %}
 
-{% block content %}
 
+{% block content %}
 
 <center>
 
 
-Add Rooms
+  <h2><span class="label label-info">Add Rooms</span></h2>
+
+  
 {{L}}
 <form role="form" action="" method="POST">
 
+  <table class="table" id="adminAdd">
 
-<input type="text" name="room1" id="room1"/>
-<br>
-<br>
+    <tr>
+      <th>Club/Reason for Unavailablity</th>
+      <th>Room Number</th>
+      <th>Date</th>
+    </tr>
+    
+    <tr>
+      <td><input type="text" name="club1" id="club1"/></td>
+      <td><input type="number" name="room1" id="room1"/></td>
+      <td><input type="date" name="date1" id="date1"/></td>
+    </tr>
 
-<input type="text" name="room2" id="room2"/>
-<br>
-<br>
-<input type="text" name="room3" id="room3"/>
-<br>
-<br>
-<input type="text" name="room4" id="room4"/>
-<br>
-<br>
-<input type="text" name="room5" id="room5"/>
-<br>
-<br>
+    <tr>
+      <td><input type="text" name="club2" id="club2"/></td>
+      <td><input type="number" name="room2" id="room2"/></td>
+      <td><input type="date" name="date2" id="date2"/></td>
+    </tr>
+
+    <tr>
+      <td><input type="text" name="club3" id="club3"/></td>
+      <td><input type="number" name="room3" id="room3"/></td>
+      <td><input type="date" name="date3" id="date3"/></td>
+    </tr>
+
+    <tr>
+      <td><input type="text" name="club4" id="club4"/></td>
+      <td><input type="number" name="room4" id="room4"/></td>
+      <td><input type="date" name="date4" id="date4"/></td>
+    </tr>
+
+    <tr>
+      <td><input type="text" name="club5" id="club5"/></td>
+      <td><input type="number" name="room5" id="room5"/></td>
+      <td><input type="date" name="date5" id="date5"/></td>
+    </tr>
+
+  </table>
+
 
 <input class="btn btn-primary" id="submit" name="submit" type="submit" value="Submit" value_="Login">
 </form>

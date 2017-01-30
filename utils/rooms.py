@@ -101,6 +101,35 @@ def addBook(email, date, room):
     db.close()
     return msg
 
+
+def adminAddBook(room, club, date):
+
+
+    if room == None or room == "" or club == None or club == "":
+        return "One or more fields was not filled"
+    
+    if int(room) < 101 or int(room) > 1030:
+        return "Room does not exist!!!"
+
+    
+    db = connect(f)
+    c = db.cursor()
+    checkCreateTable()
+    
+    msg = "Sorry, " + str(room) + "  is booked on " + str(date)
+    
+    if not booked(date, room):        
+         now = datetime.datetime.now()
+         time = now.strftime("%H:%M")
+         weekday = datetime.datetime.strptime(date, "%Y-%m-%d").strftime('%A')
+         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
+         c.execute(query, (club, "admin", room, date, weekday, time))
+         msg =  (club + " has now booked " + str(room) + " on " + date)
+    db.commit()
+    db.close()
+    return msg
+
+
 def removeBook(room, date):
     db = connect(f)
     c = db.cursor()
