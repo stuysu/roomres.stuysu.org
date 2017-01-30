@@ -227,6 +227,9 @@ def adview():
             room = info.split(',')[1]
             club = info.split(',')[2]
             msg = rooms.removeBook(room, day)
+        elif 'book' in request.form:
+            rooms.addBook(request.form["email"],request.form["date"],request.form["room"])
+            return redirect(url_for("adview"))
         else:
             info = request.form['change']
             day = info.split(',')[0]

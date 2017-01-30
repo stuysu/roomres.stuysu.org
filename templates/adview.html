@@ -40,5 +40,17 @@
 
 {% endfor %}
 </table>
+
+<h3>Manually Add a Booking</h3>
+
+<form method="POST">
+  Club Email: <input type="text" name="email"><br>
+  Date: <input type="date" name="date"><br>
+  Room: <input type="number" name="room"><br>
+
+  <button TYPE="submit" name="book">Book Room</button>
+</form>
+
+
 </center>
 {% endblock %}
