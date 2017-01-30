@@ -159,7 +159,7 @@ def getFirstWeekdayDate(month, weekday):
     return day.day
 
 
-def adminAddRooms(room, month, day):
+def adminAddRoom(room, month, day):
     
     if room == None or room == "":
         return "One or more fields was not filled"
@@ -218,6 +218,10 @@ def removeBook(room, date):
     return msg
 
 def changeBook(date,room,newr,club):
+
+    if newr == "" or newr == None:
+        return "new room empty"
+    
     db = connect(f)
     c = db.cursor()
     checkCreateTable()
@@ -225,6 +229,7 @@ def changeBook(date,room,newr,club):
     c.execute(query, (newr,date,room,club))
     db.commit()
     db.close()
+    return "change success"
     
 #change date to day and month
 def adminDeleteRoom(room, month, day):
@@ -267,157 +272,10 @@ def adminDeleteRoom(room, month, day):
     db.close()
     return "Remove room for booking"
 
-####
-#OLD MONGODB BASED FUNCTIONS
-    
-"""
-Adds rooms to room list 5 at a time
-Args:
-  r<n>: room number
-Return:
-  True if succeded
-  False if not
-"""
-
-'''
-
-def add_room(l):
-    for room in l:
-        check = list(db.rooms.find({'room': room}))
-
-        today = str(datetime.date.today())
-        month = str(today.split('-')[1])
-        year = str(today.split('-')[0])
-        date = year + '-' + month + '-'
-        month2 = str((int(month)+1)%12)
-        if month=="12":
-            year2=str(int(year)+1)
-        date2 = year2 + '-' + month2 + '-'
-
-        d = 1
-
-        if  len(room)>2 and check == []:
-            while d < 32:
-                t = {'day': date + str(d) , 'room':room, 'club': ''}
-                t2 = {'day': date2 + str(d) , 'room':room, 'club': ''}
-                d+=1
-                db.rooms.insert(t)
-                db.rooms.insert(t2)
-
-"""
-adds club name to end of date-room-club
-Args:
-    d = date
-    r = room #
-    e = club name
-Return:
-  True if succeded
-  False if not
-"""
-def book_room(d, r, e):
-    check = list(db.rooms.find({'day': d}))
-    email(e, "Room Booking", "You are now booked for " + str(r) + " on " + str(d) )
-    if check != []:
-        db.rooms.update(
-            {
-                'day': d,
-                'room' : r
-            },
-            {'$set':
-             {
-                 "club": e
-             }
-         }
-         )
-        return True
-
-
-"""
-*admin usage only
-change room number of a club
-Args:
-    d = date
-    r = room #
-    c = club number
-    r2 = new room #
-Return:
-  True if succeded
-  False if not
-"""
-def change_room(d, r, r2, c):
-    #check = list(db.rooms.find({'day': d}))
-    check = list(findP("day",d))
-    if check != []:
-        db.rooms.update(
-            {
-                'day': d,
-                'club': c,
-                'room': r
-            },
-            {'$set':
-             {
-                 'room' : r2
-             }
-         }
-         )
-        book_room(d, r, c)
-        email(c, "Booking Changed", "Sorry for the inconvenience, but because of faculty requests, your room booking on " + d + " is now in room " + r2)
-        return True
-
-
-
-def del_room(d, r, c):
-    #check = list(db.rooms.find({'day': d}))
-    check = list(findP("day",d))
-    if check != []:
-        # Find entry with query of day = d and room = r
-        # Of that entry, set club to ''
-        db.rooms.update(
-            {
-                'day': d,
-                'room' : r
-            },
-            {'$set':
-             {
-                 "club": ''
-             }
-         }
-         )
-        email(c, "Booking Cancelled", "Your room booking on " + d + " is now cancelled")
-        return True
-
-
-
-def takeoff_room(r):
-    #check = list(db.rooms.find({'room': r}))
-    check = list(findP("room",r))
-    if check != []:
-        collection.remove({'room' : r})
-        return True
-    return False
-
-
-
-"""
-Finds club name with email.
-Args:
-    email - club user email address
-Returns:
-    True if club exist
-    False if club does not exist
-"""
-def find_club(email):
-    #name =  list(db.users.find({'email':email}))
-    name =  list(findP("email",email))
-    if name != []:
-        return name[0]['name']
-    return False
-
-db.commit()
-db.close()
-'''
-
 
 if __name__=="__main__":
-    addBook("test@example.com",  "2016-01-29", 235)
+    print "check"
+    #addBook("test@example.com",  "2016-01-29", 235)
 
+
+    
