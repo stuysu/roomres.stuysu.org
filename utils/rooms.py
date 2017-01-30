@@ -151,8 +151,11 @@ def getFirstWeekdayDate(month, weekday):
     cal = calendar.Calendar(0)
     mon = cal.monthdatescalendar(datetime.datetime.now().year,int(month))
     firstweek = mon[0]
-    day = firstweek[dayDict[weekday]]
 
+    day = firstweek[dayDict[weekday]]
+    if day.month != month:
+        day = mon[1][dayDict[weekday]]
+    
     return day.day
 
 
@@ -180,7 +183,12 @@ def adminAddRooms(room, month, day):
     monthStr = str(month)
     if month < 10:
         monthStr = "0" + monthStr
-             
+
+    print "adding"
+
+    print fDay
+    print mDays
+        
     while fDay <= mDays:
         fDayStr = str(fDay)
         if (fDay < 10):
@@ -188,7 +196,7 @@ def adminAddRooms(room, month, day):
             
         date = str(now.year) + "-" + str(monthStr) + "-" + str(fDayStr)
         query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
-        c.execute(query, (club, "admin", room, date, day, time))                
+        c.execute(query, (club, "admin", room, date, day, time))
         fDay+=7
          
     db.commit()
@@ -202,7 +210,7 @@ def removeBook(room, date):
     checkCreateTable()
     msg = str(room) + " is actually now booked on " + date
     if booked(date, room):
-        query = "DELETE FROM rooms WHERE date=? and room=?"
+        query = "UPDATE rooms SET club=\"\", email=\"admin\" WHERE date=? and room=?"     
         c.execute(query, (date, room))
         msg =  str(room) + " is now available on " + date 
     db.commit()
@@ -218,7 +226,46 @@ def changeBook(date,room,newr,club):
     db.commit()
     db.close()
     
+#change date to day and month
+def adminDeleteRoom(room, month, day):
+    
+    if room == None or room == "":
+        return "One or more fields was not filled"
+    
+    if int(room) < 101 or int(room) > 1030:
+        return "Room does not exist!!!"
 
+    month = int(month)
+    
+    db = connect(f)
+    c = db.cursor()
+    checkCreateTable()
+           
+    now = datetime.datetime.now()
+    time = now.strftime("%H:%M")
+
+    mDays = calendar.monthrange(2017,int(month))[1]
+    fDay = getFirstWeekdayDate(month, day)
+
+    monthStr = str(month)
+    if month < 10:
+        monthStr = "0" + monthStr
+             
+    while fDay <= mDays:
+        fDayStr = str(fDay)
+        if (fDay < 10):
+            fDayStr = "0" + fDayStr
+            
+        date = str(now.year) + "-" + str(monthStr) + "-" + str(fDayStr)
+
+        query = "DELETE from rooms where date=? and room=?"
+        c.execute(query,(date,room))
+        
+        fDay+=7
+         
+    db.commit()
+    db.close()
+    return "Remove room for booking"
 
 ####
 #OLD MONGODB BASED FUNCTIONS

@@ -255,6 +255,7 @@ def add():
     if request.method=="GET":
         return render_template("add.html",out=userOut()) 
     else:
+        
         choices = {}
         choices[request.form["room1"]] = request.form["month1"]
         choices[request.form["room2"]] = request.form["month2"]
@@ -272,6 +273,7 @@ def add():
         
         i = -1
         for key,val in choices.iteritems():
+            print "to add"
             rooms.adminAddRooms(key,val,days[i])
             i+=1
 
