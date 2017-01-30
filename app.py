@@ -214,7 +214,14 @@ def adlogin():
                 session['type'] = 'administration'
                 return redirect(url_for("administrationview"))
         return render_template("login.html",message="Failed login",out=userOut())
-    
+
+
+@app.route("/adviewall", methods=['GET','POST'])
+def adviewall():
+    if request.method == "GET":
+        check = rooms.find()
+        return render_template("adview.html", L = sorted(check, key=lambda k: k[4]),out=userOut())
+    return redirect("/")
 
 @app.route("/adview", methods=["GET", "POST"])
 def adview():
@@ -277,7 +284,7 @@ def add():
         i = -1
         for key,val in choices.iteritems():
             print "to add"
-            rooms.adminAddRooms(key,val,days[i])
+            rooms.adminAddRoom(key,val,days[i])
             i+=1
 
         #how do we handle multiple messages here?
@@ -294,16 +301,30 @@ def dele():
     if request.method=="GET":
         return render_template("del.html",out=userOut())
     else:
-        r1 = request.form["room1"]
-        r2 = request.form["room2"]
-        r3 = request.form["room3"]
-        r4 = request.form["room4"]
-        r5 = request.form["room5"]
-        L = [r1,r2,r3,r4,r5]
-        for r in L:
-            if len(r) > 2:
-                rooms.takeoff_room(r)  # <--------------------
-        return redirect(url_for("add"))
+        choices = {}
+        choices[request.form["room1"]] = request.form["month1"]
+        choices[request.form["room2"]] = request.form["month2"]
+        choices[request.form["room3"]] = request.form["month3"]
+        choices[request.form["room4"]] = request.form["month4"]
+        choices[request.form["room5"]] = request.form["month5"]
+
+        days = []
+        days.append(str(request.form["day1"]))
+        days.append(str(request.form["day2"]))
+        days.append(str(request.form["day3"]))
+        days.append(str(request.form["day4"]))
+        days.append(str(request.form["day5"]))
+
+        
+        i = -1
+        for key,val in choices.iteritems():
+            print "to add"
+            rooms.adminRemoveRoom(key,val,days[i])
+            i+=1
+
+        #how do we handle multiple messages here?
+        
+        return redirect(url_for("del"))
 
 
 
