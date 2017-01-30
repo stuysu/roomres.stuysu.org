@@ -237,7 +237,7 @@ def adview():
         #message add
         return redirect(url_for("adview"))
     if request.method == "GET":
-        check = rooms.find()
+        check = rooms.findBooked()
         return render_template("adview.html", L = sorted(check, key=lambda k: k[4]),out=userOut())
     
 

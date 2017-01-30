@@ -51,10 +51,16 @@ def findP(field,value):
     return l
 
 
+def findBooked():
+    db = connect(f)
+    c = db.cursor()
+    c.execute("SELECT * from rooms WHERE club!=\"\"")
+    l =  cursorToList(c)
+    db.close()
+    return l
+
 
 def findUnbooked(field,value):
-    print "check"
-    print value
     db = connect(f)
     c = db.cursor()
     if type(value) is int:
