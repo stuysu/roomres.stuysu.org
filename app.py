@@ -124,11 +124,8 @@ def dashboard():
             if month[0] == '0':
                 month = month[1]
             date =  year+"-" +month+'-'+d
-            #print date
             session['day'] = date
-            #check =list(utils.db.rooms.find({'day':date}))
-            check = rooms.findP("date",date)
-            
+            check = rooms.findP("date",date)            
             return render_template("dashboard.html", L = cal, G = check, message=0,out=userOut())
         else:
             r = request.form['room']
@@ -140,7 +137,7 @@ def dashboard():
 def dashnext():
     if 'logged_in' not in session:
         return redirect(url_for("root"))
-    cal = utils.calendardict(1)
+    cal = calendars.calendardict(1)
     if request.method=="GET":
         return render_template("dashboard.html", L = cal, message=1,out=userOut())
     else:
@@ -159,11 +156,11 @@ def dashnext():
                 month = month[1]
             date =  year+"-" +month+'-'+d
             session['day'] = date
-            #check =list(utils.db.rooms.find({'day':date}))
             return render_template("dashboard.html", L = cal, message=1,out=userOut()) #G = check
         else:
             r = request.form['room']
-            rooms.addBook(session['email'],d,r)
+            msg = rooms.addBook(session['email'],d,r)
+            #Use jinja to add a message to show success
             return redirect(url_for("view"))
             #return "You've booked " + session['room'] + " for " + session['day'] + "!"
 
@@ -182,7 +179,8 @@ def view():
         day = info.split(',')[0]
         room = info.split(',')[1]
         club = info.split(',')[2]
-        rooms.removeBook(room,day)
+        msg = rooms.removeBook(room,day)
+        #message add
         return redirect(url_for("view"))
 
 
@@ -225,16 +223,15 @@ def adview():
             day = info.split(',')[0]
             room = info.split(',')[1]
             club = info.split(',')[2]
-            print "unfoi: " 
-            print (room,day)
-            rooms.removeBook(room, day)
+            msg = rooms.removeBook(room, day)
         else:
             info = request.form['change']
             day = info.split(',')[0]
             room = info.split(',')[1]
             club = info.split(',')[2]
             newr = request.form['newr']
-            rooms.changeBook(day, room, newr, club)
+            msg = rooms.changeBook(day, room, newr, club)
+        #message add
         return redirect(url_for("adview"))
     if request.method == "GET":
         check = rooms.find()
@@ -249,15 +246,11 @@ def administrationview():
     return render_template("damesek.html", L=sorted(check, key=lambda k: k[4]),out=userOut()) #k[4] is day
 
 
-#INCOMPLETE
-#NEED TO SEE WHAT L does
-#probably debugging becuase specific date
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
     if request.method=="GET":
-        #check =list(utils.db.rooms.find({'day': '2016-10-4'}))
-        return render_template("add.html",out=userOut()) #, L =check)
+        return render_template("add.html",out=userOut()) 
     else:
         choices = {}
         choices[request.form["room1"]] = request.form["club1"]
@@ -278,12 +271,15 @@ def add():
         for key,val in choices.iteritems():
             rooms.adminAddBook(key,val,dates[i])
             i+=1
+
+        #how do we handle multiple messages here?
         
         return redirect(url_for("add"))
 
 
 #INCOMPLETE
-# WHAT IS TAKEOFF ROOM SUPPOSED TO DO?
+#REMOVES MULTIPLE ROOMS
+#ALSO FIX TEMPLATE?
 
 @app.route("/del", methods=["GET", "POST"])
 def dele():
@@ -298,7 +294,7 @@ def dele():
         L = [r1,r2,r3,r4,r5]
         for r in L:
             if len(r) > 2:
-                rooms.takeoff_room(r)
+                rooms.takeoff_room(r)  # <--------------------
         return redirect(url_for("add"))
 
 
