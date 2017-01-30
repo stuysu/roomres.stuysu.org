@@ -23,6 +23,16 @@ NOT LOGGED IN
 
 @app.route('/')
 def root():
+    if 'logged_in' in session:
+        if session['type'] == 'user':
+            return redirect(url_for("/dashboard"))
+        elif session['type'] == 'admin':
+            print "ad view"
+            return redirect(url_for("adview"))
+        elif session['type'] == 'administrator':
+            return redirect(url_for("/administrationview"))
+        else:
+            return "You broke the page!"
     return render_template("index.html",out=userOut())
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -61,6 +71,7 @@ def login():
             session['logged_in'] = True
             session['email'] = email
             session['pwd'] = pwd
+            session['type'] = 'club'
             return redirect(url_for("dashboard"))
         else:
             return render_template("login.html",message=msg,out=userOut())
@@ -85,6 +96,7 @@ def logout():
     session.pop('email')
     session.pop('pwd')
     session.pop('logged_in')
+    session.pop('type')
     return redirect(url_for("root"))
 
 
@@ -193,8 +205,10 @@ def adlogin():
             session['email'] = email
             session['pwd'] = pwd
             if email=="admin":
+                session['type'] = 'admin'
                 return redirect(url_for("adview"))
             else:
+                session['type'] = 'administration'
                 return redirect(url_for("administrationview"))
         return render_template("login.html",message="Failed login",out=userOut())
     
@@ -207,36 +221,31 @@ def adview():
             day = info.split(',')[0]
             room = info.split(',')[1]
             club = info.split(',')[2]
-            rooms.del_room(day, room, club)
+            print "unfoi: " 
+            print (room,day)
+            rooms.removeBook(room, day)
         else:
             info = request.form['change']
             day = info.split(',')[0]
             room = info.split(',')[1]
             club = info.split(',')[2]
             newr = request.form['newr']
-            rooms.change_room(day, room, newr, club)
+            rooms.changeBook(day, room, newr, club)
         return redirect(url_for("adview"))
     if request.method == "GET":
-        check = list(rooms.find())
-        newcheck = []
-        for item in check:
-            if 'club' in item and item['club'] != '':
-                name = rooms.find_club(item['club'])
-                item['name'] = name
-                newcheck.append(item)
-        return render_template("adview.html", L = sorted(newcheck, key=lambda k: k['day']))
+        check = rooms.find()
+        return render_template("adview.html", L = sorted(check, key=lambda k: k[4]))
+    
 
 @app.route("/administrationview", methods=["GET"])
 def administrationview():
-    check = list(rooms.db.rooms.find())
-    newcheck = []
-    for item in check:
-        if 'club' in item and item['club'] != '':
-            name=rooms.find_club(item['club'])
-            item['name'] = name
-            newcheck.append(item)
-    return render_template("damesek.html", L=sorted(newcheck, key=lambda k: k['day']))
+    check = rooms.find()
+    return render_template("damesek.html", L=sorted(check, key=lambda k: k[4])) #k[4] is day
 
+
+#INCOMPLETE
+#NEED TO SEE WHAT L does
+#probably debugging becuase specific date
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
@@ -250,9 +259,12 @@ def add():
         r4 = request.form["room4"]
         r5 = request.form["room5"]
         L = [r1,r2,r3,r4,r5]
-        rooms.add_room(L)
+        rooms.addBook(L)
         return redirect(url_for("add"))
 
+
+#INCOMPLETE
+# WHAT IS TAKEOFF ROOM SUPPOSED TO DO?
 
 @app.route("/del", methods=["GET", "POST"])
 def dele():

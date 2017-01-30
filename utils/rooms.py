@@ -6,9 +6,7 @@ import datetime
 from calendar import monthrange
 
 
-f = "../data/roomres.db"
-db = connect(f)
-c = db.cursor()
+f = "data/roomres.db"
 
 '''
 ---------------------------------------
@@ -16,9 +14,23 @@ Find list of values functions
 ----------------------------------------
 '''
 
+
+def cursorToList(c):
+    items = c.fetchall()
+    books = []
+    for item in items:
+        book = []
+        for info in item:
+            book.append(str(info))
+        books.append(book)
+    return books
+
 def find():
     checkCreateTable()
-    return c.fetchall()
+    db = connect(f)
+    c = db.cursor()
+    c.execute("SELECT * from rooms")
+    return cursorToList(c)
 
 def findP(field,value):
     if type(value) is int:
@@ -27,7 +39,7 @@ def findP(field,value):
         c.execute("SELECT * from rooms WHERE %s = \"%s\"" % (field,value))
     else:
         c.execute("SELECT * from rooms")
-    return c.fetchall()
+    return cursorToList(c)
 
 
 '''
@@ -35,8 +47,6 @@ def findP(field,value):
 UPDATE DB FUNCTIONS
 ------------------------------
 '''
-
-#queries is a dictionary or list?
 
 def checkCreateTable():
     db = connect(f)
@@ -46,9 +56,9 @@ def checkCreateTable():
     except:
         c.execute("CREATE TABLE rooms (club TEXT, email TEXT, room INT, date TEXT, weekday TEXT, time TEXT)");
     db.commit()
-    db.close()
-    
+    #db.close()
 
+    
 def booked(date, room):
     db = connect(f)
     c = db.cursor()
@@ -65,7 +75,9 @@ def addBook(club, email, room, date):
     db = connect(f)
     c = db.cursor()
     checkCreateTable()
+    msg = "Sorry, " + str(room) + "  is booked on " + date
     if not booked(date, room):
+         print "adding"
          now = datetime.datetime.now()
          time = now.strftime("%H:%M")
          weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')
@@ -73,24 +85,37 @@ def addBook(club, email, room, date):
          #print time
          query = ("INSERT INTO rooms VALUES (?, ?, ?, ?, ?, ?)")
          c.execute(query, (club, email, room, date, weekday, time))
-         return club + " has now booked " + str(room) + " on " + date
-    else:
-        return "Sorry, " + str(room) + "  is booked on " + date
+         msg =  (club + " has now booked " + str(room) + " on " + date)
     db.commit()
     db.close()
+    return msg
 
 def removeBook(room, date):
     db = connect(f)
     c = db.cursor()
     checkCreateTable()
+    msg = str(room) + " is actually now booked on " + date
     if booked(date, room):
         query = "DELETE FROM rooms WHERE date=? and room=?"
         c.execute(query, (date, room))
-        return str(room) + " is now available on " + date
-    else:
-        return str(room) + " is actually now booked on " + date
+        msg =  str(room) + " is now available on " + date 
     db.commit()
     db.close()
+    return msg
+
+def changeBook(date,room,newr,club):
+    db = connect(f)
+    c = db.cursor()
+    checkCreateTable()
+    query = "UPDATE rooms SET room=? WHERE date=? and room=? and club=?"
+    c.execute(query, (newr,date,room,club))
+    db.commit()
+    db.close()
+    
+
+
+####
+#OLD MONGODB BASED FUNCTIONS
     
 """
 Adds rooms to room list 5 at a time
@@ -100,6 +125,8 @@ Return:
   True if succeded
   False if not
 """
+
+'''
 
 def add_room(l):
     for room in l:
@@ -235,6 +262,9 @@ def find_club(email):
 
 db.commit()
 db.close()
+'''
+
 
 if __name__=="__main__":
-    updateDB("RoadRunners", "test@example.com", 235, "2016-01-29")
+    addBook("RoadRunners", "test@example.com", 235, "2016-01-29")
+
