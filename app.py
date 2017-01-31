@@ -217,7 +217,7 @@ def adlogin():
 
 @app.route("/adviewall", methods=['GET','POST'])
 def adviewall():
-    if request.method == "GET":
+    if request.method == "GET" and "type" in session and session["type"] == "admin":
         check = rooms.find()
         return render_template("adview.html", L = sorted(check, key=lambda k: k[4]),out=userOut())
     return redirect("/")
