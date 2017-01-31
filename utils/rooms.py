@@ -122,7 +122,7 @@ def addBook(email, date, room):
              
          now = datetime.datetime.now()
          time = now.strftime("%H:%M")
-         weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')
+         #weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')
          #print date
          #print time
 
