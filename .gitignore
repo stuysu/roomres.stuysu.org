@@ -90,3 +90,6 @@ ENV/
 
 #emacs backups
 *~
+
+#sqlite database
+data/
