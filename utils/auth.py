@@ -31,14 +31,14 @@ def login(email, password):
 def register(club, osis, email, ps1, ps2):
     if not ps1 == ps2:
         return "Passwords not the same."
-    db = connect(f)
-    c = db.cursor()
-    try:
-        c.execute("SELECT * FROM USERS")
-    except:
-        c.execute("CREATE TABLE users (userID INT, email TEXT, osis INT, salt TEXT, password TEXT, club TEXT)")
-        db.commit()
-        db.close()
+    #db = connect(f)
+    #c = db.cursor()
+    #try:
+    #    c.execute("SELECT * FROM USERS")
+    #except:
+    #    c.execute("CREATE TABLE users (userID INT, email TEXT, osis INT, salt TEXT, password TEXT, club TEXT)")
+    #    db.commit()
+    #    db.close()
     return regMain(club, osis, email, ps1)#register helper
 
 def getSize():
@@ -53,7 +53,7 @@ def getSize():
     return size
 
 def regMain(club, osis, email, password):#register helper
-    db = connect(f)
+    db = connect(f, timeout=10)
     c = db.cursor()
     reg = errorMsg(email, password)
     if reg == "": #if error message is blank then theres no problem, update database
