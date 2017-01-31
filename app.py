@@ -121,7 +121,6 @@ def dashboard():
             today = datetime.date.today()
             month = today.month
             if month < 10:
-                print "addddddd on"
                 month = "0" + str(month)
             else:
                 month = str(month)
@@ -130,8 +129,6 @@ def dashboard():
             date =  year+"-" +month+'-'+d
             session['day'] = date
             check = rooms.findUnbooked("date",date)
-            print "CHHHHEC"
-            print check
             return render_template("dashboard.html", L = cal, G = check, message=0,out=userOut())
         else:
             r = request.form['room']

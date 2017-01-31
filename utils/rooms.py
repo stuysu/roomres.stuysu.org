@@ -37,6 +37,7 @@ def find():
     return l
 
 def findP(field,value):
+    checkCreateTable()
     db = connect(f)
     c = db.cursor()
     if type(value) is int:
@@ -54,6 +55,7 @@ def findP(field,value):
 
 
 def findBooked():
+    checkCreateTable()
     db = connect(f)
     c = db.cursor()
     c.execute("SELECT * from rooms WHERE club!=\"\"")
@@ -64,6 +66,7 @@ def findBooked():
 
 
 def findUnbooked(field,value):
+    checkCreateTable()
     db = connect(f)
     c = db.cursor()
     c.execute("SELECT * from rooms WHERE date = \"%s\" AND club=\"\"" % (value))
