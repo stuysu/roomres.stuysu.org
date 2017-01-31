@@ -31,7 +31,8 @@ def find():
     db = connect(f)
     c = db.cursor()
     c.execute("SELECT * from rooms")
-    l = cursorToList(c)
+    a = c
+    l = cursorToList(a)
     db.close()
     return l
 
@@ -46,7 +47,8 @@ def findP(field,value):
         print "error: "
         print type(value)
         c.execute("SELECT * from rooms")
-    l =  cursorToList(c)
+    a = c
+    l =  cursorToList(a)
     db.close()
     return l
 
@@ -55,7 +57,8 @@ def findBooked():
     db = connect(f)
     c = db.cursor()
     c.execute("SELECT * from rooms WHERE club!=\"\"")
-    l =  cursorToList(c)
+    a = c
+    l =  cursorToList(a)
     db.close()
     return l
 
@@ -63,15 +66,9 @@ def findBooked():
 def findUnbooked(field,value):
     db = connect(f)
     c = db.cursor()
-    if type(value) is int:
-        c.execute("SELECT * from rooms WHERE %s = %d AND club=\"\"" % (field,value))
-    elif type(value) is str or type(value) is unicode:
-        c.execute("SELECT * from rooms WHERE %s = \"%s\" AND club=\"\"" % (field,value))
-    else:
-        print "error: "
-        print type(value)
-        c.execute("SELECT * from rooms")
-    l =  cursorToList(c)
+    c.execute("SELECT * from rooms WHERE date = \"%s\" AND club=\"\"" % (value))
+    a = c
+    l = cursorToList(a)
     db.close()
     return l
 
@@ -106,27 +103,35 @@ def booked(date, room):
     return value
 
 def addBook(email, date, room):
+
+    print "HEYYYY"
+    print email,date,room
+    
     db = connect(f)
     c = db.cursor()
     checkCreateTable()
     msg = "Sorry, " + str(room) + "  is booked on " + date
     if not booked(date, room):
-         query = ("SELECT * from users WHERE email=?")
-         print email
-         print(query,(email))
-         c.execute(query,(email,))
-         club = c.fetchall()[0][5]
-         
+
+         try:
+             query = ("SELECT * from users WHERE email=?")
+             c.execute(query,(email,))
+             club = c.fetchall()[0][5]
+         except:
+             club = "N/A"
+             
          now = datetime.datetime.now()
          time = now.strftime("%H:%M")
          weekday = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%A')
          #print date
          #print time
 
+         '''
          print "club:"
          print club
          print "email:"
          print email
+         '''
 
          query = ("UPDATE rooms SET club=? , email=?, time=? WHERE room=? and date=?")
          c.execute(query, (club, email, time,room,date))
@@ -151,7 +156,7 @@ def getFirstWeekdayDate(month, weekday):
     cal = calendar.Calendar(0)
     mon = cal.monthdatescalendar(datetime.datetime.now().year,int(month))
     firstweek = mon[0]
-
+    
     day = firstweek[dayDict[weekday]]
     if day.month != month:
         day = mon[1][dayDict[weekday]]
@@ -160,6 +165,7 @@ def getFirstWeekdayDate(month, weekday):
 
 
 def adminAddRoom(room, month, day):
+
     
     if room == None or room == "":
         return "One or more fields was not filled"
@@ -184,10 +190,7 @@ def adminAddRoom(room, month, day):
     if month < 10:
         monthStr = "0" + monthStr
 
-    print "adding"
-
-    print fDay
-    print mDays
+    print fDay, mDays
         
     while fDay <= mDays:
         fDayStr = str(fDay)

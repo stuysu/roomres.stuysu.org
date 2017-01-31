@@ -121,16 +121,17 @@ def dashboard():
             today = datetime.date.today()
             month = today.month
             if month < 10:
+                print "addddddd on"
                 month = "0" + str(month)
             else:
                 month = str(month)
             year = str(today.year)
-            
-            if month[0] == '0':
-                month = month[1]
+                
             date =  year+"-" +month+'-'+d
             session['day'] = date
-            check = rooms.findUnbooked("date",date)            
+            check = rooms.findUnbooked("date",date)
+            print "CHHHHEC"
+            print check
             return render_template("dashboard.html", L = cal, G = check, message=0,out=userOut())
         else:
             r = request.form['room']
@@ -247,6 +248,7 @@ def adview():
         #message add
         return redirect(url_for("adview"))
     if request.method == "GET":
+        rooms.checkCreateTable()
         check = rooms.findBooked()
         return render_template("adview.html", L = sorted(check, key=lambda k: k[4]),out=userOut())
     
@@ -266,13 +268,20 @@ def add():
         return render_template("add.html",out=userOut()) 
     else:
         
-        choices = {}
-        choices[request.form["room1"]] = request.form["month1"]
-        choices[request.form["room2"]] = request.form["month2"]
-        choices[request.form["room3"]] = request.form["month3"]
-        choices[request.form["room4"]] = request.form["month4"]
-        choices[request.form["room5"]] = request.form["month5"]
+        choices = []
+        choices.append(request.form["room1"]) 
+        choices.append(request.form["room2"]) 
+        choices.append(request.form["room3"])
+        choices.append(request.form["room4"])
+        choices.append(request.form["room5"]) 
 
+        months = []
+        months.append(request.form["month1"])
+        months.append(request.form["month2"])
+        months.append(request.form["month3"])
+        months.append(request.form["month4"])
+        months.append(request.form["month5"])
+        
         days = []
         days.append(str(request.form["day1"]))
         days.append(str(request.form["day2"]))
@@ -281,10 +290,10 @@ def add():
         days.append(str(request.form["day5"]))
 
         
-        i = -1
-        for key,val in choices.iteritems():
-            print "to add"
-            rooms.adminAddRoom(key,val,days[i])
+        i = 0
+        while i < 5:
+            if choices[i] != None and choices[i] != "":
+                rooms.adminAddRoom(choices[i],months[i],days[i])
             i+=1
 
         #how do we handle multiple messages here?
@@ -301,13 +310,21 @@ def dele():
     if request.method=="GET":
         return render_template("del.html",out=userOut())
     else:
-        choices = {}
-        choices[request.form["room1"]] = request.form["month1"]
-        choices[request.form["room2"]] = request.form["month2"]
-        choices[request.form["room3"]] = request.form["month3"]
-        choices[request.form["room4"]] = request.form["month4"]
-        choices[request.form["room5"]] = request.form["month5"]
 
+        choices = []
+        choices.append(request.form["room1"]) 
+        choices.append(request.form["room2"]) 
+        choices.append(request.form["room3"])
+        choices.append(request.form["room4"])
+        choices.append(request.form["room5"]) 
+
+        months = []
+        months.append(request.form["month1"])
+        months.append(request.form["month2"])
+        months.append(request.form["month3"])
+        months.append(request.form["month4"])
+        months.append(request.form["month5"])
+        
         days = []
         days.append(str(request.form["day1"]))
         days.append(str(request.form["day2"]))
@@ -316,10 +333,10 @@ def dele():
         days.append(str(request.form["day5"]))
 
         
-        i = -1
-        for key,val in choices.iteritems():
-            print "to add"
-            rooms.adminRemoveRoom(key,val,days[i])
+        i = 0
+        while i < 5:
+            if choices[i] != None and choices[i] != "":
+                rooms.adminRemoveRoom(choices[i],months[i],days[i])
             i+=1
 
         #how do we handle multiple messages here?
