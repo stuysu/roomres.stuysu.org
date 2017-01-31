@@ -17,7 +17,7 @@ def calendardict(i):
     today = str(datetime.date.today())
     month = int(today.split('-')[1])
     year = int(today.split('-')[0])
-    print month,year
+    #print month,year
     
     if i == 0:
         now = list(monthrange(year, month)) # returns [weekday of first day, number of days]
@@ -59,6 +59,6 @@ def calendardict(i):
                 tempL += [date]
             date +=1
     L += [tempL]
-    print L
+    #print L
     return L
 

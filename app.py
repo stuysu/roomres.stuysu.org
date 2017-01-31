@@ -145,6 +145,7 @@ def dashnext():
         return render_template("dashboard.html", L = cal, message=1,out=userOut(), G="")
     else:
         d = request.form["day"]
+        
         if len(d)< 3:
             today = datetime.date.today()
             month = today.month+1
