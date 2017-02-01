@@ -202,7 +202,7 @@ def adlogin():
         email = request.form['email']
         pwd = request.form['pwd']
 
-        if (email=="admin" or email=="administration") and pwd=="StuySU2017":
+        if (email=="admin" or email=="administration") and pwd=="":
             session['logged_in'] = True
             session['email'] = email
             session['pwd'] = pwd
