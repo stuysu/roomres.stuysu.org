@@ -81,12 +81,14 @@ def login():
 @app.route("/changepwd/", methods=["GET", "POST"])
 def changepwd():
     if request.method == "GET":
-        return render_template("changepwd.html",out=userOut())
+        return render_template("changepwd.html",out=userOut(),message="")
     else:
-        email = request.form['email']
-        pwd = request.form['pwd']
-        auth.changepwd(email, pwd)
-        return redirect(url_for("login"))
+        old = request.form['old_pwd']
+        new = request.form['new_pwd']
+        new2 = request.form['new_pwd_2']
+        msg = auth.changepwd(session['email'],old,new,new2)
+        print msg
+        return render_template("changepwd.html",message=msg)
 
 
 @app.route("/logout", methods=["GET"])

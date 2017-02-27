@@ -2,6 +2,17 @@
 
 {% block content %}
 <center>
+
+
+  {% if not message == "" and not message == "Password successfully changed" %}
+  <div class="alert alert-danger" role="alert">{{ message }}</div>
+  {% endif %}
+
+  {% if message == "Password successfully changed" %}
+  <div class="alert alert-success" role="alert">{{ message }}</div>
+  {% endif %}
+  
+  
   <br>
   <br>
 <p  style="font-size:27px">
@@ -11,12 +22,18 @@
 <br>
  <form role="form" action="" method="POST">
 
- EMAIL
- <input type="text" name="email" id="email"/>
+ OLD PASSWORD
+ <input type="password" name="old_pwd" id="old_pwd"/>
  <br>
  <br>
-PASSWORD
- <input type="password" name="pwd" id="pwd"/>
+
+ NEW PASSWORD
+ <input type="password" name="new_pwd" id="new_pwd"/>
+ <br>
+ <br>
+
+ CONFIRM NEW PASSWORD
+ <input type="password" name="new_pwd_2" id="new_pwd_2"/>
  <br>
  <br>
 

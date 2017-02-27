@@ -70,6 +70,39 @@ def regMain(club, osis, email, password):#register helper
     db.close()
     return reg
 
+def changepwd(email,old,new,new2):
+    if new != new2:
+        return "New passwords are not identical"
+    if len(new) < 8:
+        return "Passwords must be greater than 8 characters"
+    if old == new:
+        return "Old and new passwords are the same"
+    db = connect(f)
+    c = db.cursor()
+    query = ("SELECT * FROM users WHERE email=?")
+    sel = c.execute(query, (email,))
+    for record in sel:
+        print record
+        oldP = sha1(old+record[3]).hexdigest() #record[3] is the salt
+        if record[4] == oldP:
+            salt = urandom(10).encode('hex')
+            password = sha1(new + salt).hexdigest()
+
+            print email
+            
+            query = ("SELECT * FROM users WHERE email=?")
+            ase = c.execute(query, (email,))
+            print ase.fetchall()
+            
+            query = ("UPDATE users SET password=?, salt=? WHERE email=?")
+            c.execute(query, (password,salt,email))
+            db.commit()
+            db.close()
+            return "Password successfully changed"
+        
+        return "Incorrect old password"
+    return "how?"
+
 def errorMsg(email, password):      #error message generator
     if '@' not in email:
         return "Please enter a valid email."
