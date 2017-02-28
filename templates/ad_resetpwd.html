@@ -1,0 +1,38 @@
+{% extends "index2.html" %}
+
+{% block content %}
+
+
+<center>
+
+  {% if not message == "" and success %}
+  <div class="alert alert-success">
+    {{message}}
+    <h2>{{newP}}</h2>
+  </div>
+  {% endif %}
+
+  {% if not message == "" and not success %}
+  <div class="alert alert-danger">
+   {{message}}
+  </div>
+  {% endif %}
+
+  
+
+  <h2>Change Password of User</h2>
+
+  <div class="alert alert-info">
+    This page is used to change the password for the club presidents that forgot their password if they contact you!
+  </div>
+
+  
+<form method="POST">
+  Club Email: <input type="text" name="email"><br></br>
+
+  <input class="btn btn-primary" id="submit" name="submit" type="submit" value="Submit" value_="Reset Password">
+</form>
+
+
+</center>
+{% endblock %}

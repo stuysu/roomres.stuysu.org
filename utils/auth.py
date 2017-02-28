@@ -1,6 +1,7 @@
 from sqlite3 import connect
 from hashlib import sha1
 from os import urandom
+import random,string
 
 f = "data/roomres.db"
 db = connect(f)
@@ -87,12 +88,6 @@ def changepwd(email,old,new,new2):
         if record[4] == oldP:
             salt = urandom(10).encode('hex')
             password = sha1(new + salt).hexdigest()
-
-            print email
-            
-            query = ("SELECT * FROM users WHERE email=?")
-            ase = c.execute(query, (email,))
-            print ase.fetchall()
             
             query = ("UPDATE users SET password=?, salt=? WHERE email=?")
             c.execute(query, (password,salt,email))
@@ -101,7 +96,7 @@ def changepwd(email,old,new,new2):
             return "Password successfully changed"
         
         return "Incorrect old password"
-    return "how?"
+    return "unexpected error"
 
 def errorMsg(email, password):      #error message generator
     if '@' not in email:
@@ -125,3 +120,25 @@ def duplicate(email):#checks if username already exists
     db.commit()
     db.close()
     return value
+
+
+def admin_resetpwd(email):
+    db = connect(f)
+    c = db.cursor()
+    query = ("SELECT * FROM users WHERE email=?")
+    sel = c.execute(query, (email,))
+    for record in sel:
+
+        new = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        salt = urandom(10).encode('hex')
+        password = sha1(new + salt).hexdigest()
+        
+        
+        query = ("UPDATE users SET password=?, salt=? WHERE email=?")
+        c.execute(query, (password,salt,email))
+        db.commit()
+        db.close()
+
+        return new
+    
+    return "Email does not exist in database!"

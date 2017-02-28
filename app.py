@@ -260,6 +260,21 @@ def administrationview():
     check = rooms.findBooked()
     return render_template("damesek.html", L=sorted(check, key=lambda k: k[4]),out=userOut()) #k[4] is day
 
+@app.route("/ad_resetpwd", methods=["GET","POST"])
+@app.route("/ad_resetpwd/", methods=["GET","POST"])
+def ad_changepwd():
+    if request.method=="GET":
+        return render_template("ad_resetpwd.html",message="")
+    else:
+        email = request.form["email"]
+        temp_pass = auth.admin_resetpwd(email)
+        good = True
+        if temp_pass == "Email does not exist in database!":
+            msg = "Password reset failed! " + temp_pass
+            good = False
+        else:
+            msg = "Password for %s successfully changed! The new temporary password is:" % (email)
+        return render_template("ad_resetpwd.html",message=msg,success = good,newP = temp_pass)
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -301,9 +316,6 @@ def add():
         return redirect(url_for("add"))
 
 
-#INCOMPLETE
-#REMOVES MULTIPLE ROOMS
-#ALSO FIX TEMPLATE?
 
 @app.route("/del", methods=["GET", "POST"])
 def dele():
